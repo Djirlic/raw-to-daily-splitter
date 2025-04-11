@@ -1,7 +1,7 @@
 # Makefile at root of project
 
 install:
-	poetry install --with test
+	poetry install --with dev,test
 
 test:
 	poetry run pytest
