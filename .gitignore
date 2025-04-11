@@ -61,6 +61,10 @@ test-output/
 .env.*
 
 # Data files
-data/
-*.csv
-*.parquet
+data/**/*.csv
+data/**/*.parquet
+
+# Keep folder structure for easy setup
+!data/
+!data/raw/
+!data/raw/.gitkeep
