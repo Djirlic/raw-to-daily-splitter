@@ -6,6 +6,9 @@ install:
 test:
 	poetry run pytest
 
+test-coverage:
+	poetry run pytest --cov=src
+
 run:
 	poetry run python src/splitter/main.py
 
