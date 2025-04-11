@@ -66,10 +66,5 @@ def save_grouped_data_to_csvs(
     for date, group in grouped_data:
         date_str = date.strftime("%Y-%m-%d")
         output_path = os.path.join(output_dir, f"{date_str}.csv")
-
-        if group.empty:
-            logger.info(f"ℹ️ No data found for date {date_str} — no file created.")
-            continue
-
         group.to_csv(output_path, index=False)
         logger.info(f"Saved {len(group)} rows to {output_path}")
