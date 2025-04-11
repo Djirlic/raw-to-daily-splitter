@@ -3,7 +3,25 @@ import os
 from collections.abc import Iterable
 
 import pandas as pd
-from logger import logger
+
+from splitter.logger import logger
+
+
+def split_by_day(input_path: str, output_dir: str) -> int:
+    """
+    Splits the data by day.
+
+    This function reads the raw CSV file, splits the data by day,
+    and saves the split data to a new CSV files (one for each date).
+
+    Args:
+        input_path (str): Path to the raw CSV file.
+        output_dir (str): Directory to save the split CSV files.
+    """
+    df = read_raw_csv(path=input_path)
+    grouped_by_date = df.groupby(df["trans_date_trans_time"].dt.date)
+    save_grouped_data_to_csvs(grouped_by_date, output_dir)
+    return len(grouped_by_date)
 
 
 def read_raw_csv(path: str) -> pd.DataFrame:
@@ -47,20 +65,3 @@ def save_grouped_data_to_csvs(
         output_path = os.path.join(output_dir, f"{date_str}.csv")
         group.to_csv(output_path, index=False)
         logger.info(f"Saved {len(group)} rows to {output_path}")
-
-
-def split_by_day(input_path: str, output_dir: str) -> int:
-    """
-    Splits the data by day.
-
-    This function reads the raw CSV file, splits the data by day,
-    and saves the split data to a new CSV files (one for each date).
-
-    Args:
-        input_path (str): Path to the raw CSV file.
-        output_dir (str): Directory to save the split CSV files.
-    """
-    df = read_raw_csv(path=input_path)
-    grouped_by_date = df.groupby(df["trans_date_trans_time"].dt.date)
-    save_grouped_data_to_csvs(grouped_by_date, output_dir)
-    return len(grouped_by_date)

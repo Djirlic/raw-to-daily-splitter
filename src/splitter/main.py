@@ -1,7 +1,6 @@
 import argparse
 
-from logger import logger
-
+from splitter.logger import logger
 from splitter.splitter import split_by_day
 
 DEFAULT_RAW_DATA_PATH = "./data/raw/fraudTrain.csv"
