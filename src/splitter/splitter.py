@@ -3,8 +3,7 @@ import os
 from collections.abc import Iterable
 
 import pandas as pd
-
-from splitter.logger import logger
+from logger import logger
 
 
 def read_raw_csv(path: str) -> pd.DataFrame:
