@@ -1,10 +1,8 @@
-[project]
+[tool.poetry]
 name = "raw-to-daily-splitter"
 description = "Split large CSV datasets into daily chunks using Python — designed for data engineering workflows."
 version = "0.1.0"
-authors = [
-    { name = "Manuel Djirlic"},
-]
+authors = ["Manuel Djirlic"]
 readme = "README.md"
 packages = [
   { include = "splitter", from = "src" }
