@@ -10,7 +10,7 @@ test-coverage:
 	poetry run pytest --cov=src
 
 run:
-	poetry run python src/splitter/main.py
+	poetry run python -m splitter.main
 
 format:
 	poetry run black .
@@ -20,3 +20,6 @@ lint:
 
 clean:
 	find . -type d -name '__pycache__' -exec rm -r {} +
+
+help:
+	poetry run python -m splitter.main --help

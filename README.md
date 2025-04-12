@@ -46,7 +46,7 @@ You’ll also need to have Python **3.13+** installed.
 ## ⚙️ Usage
 
 ```bash
-poetry run python src/splitter/main.py --input ./data/raw/fraudTrain.csv --output ./data/processed/
+poetry run python -m splitter.main --input ./data/raw/fraudTrain.csv --output ./data/processed/
 ```
 
 Or simply:
@@ -113,12 +113,6 @@ raw-to-daily-splitter/
 ├── Makefile                 # Common tasks like test, run, format
 ├── .pre-commit-config.yaml  # Hooks for formatting/linting
 ```
-
----
-
-## 📄 License
-
-MIT License — see [LICENSE](./LICENSE)
 
 ---
 
