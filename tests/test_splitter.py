@@ -22,7 +22,7 @@ def test_split_by_day_with_multiple_dates_creates_expected_files(tmp_path):
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     actual_files = {file.name for file in output_files}
@@ -50,7 +50,7 @@ def test_split_by_day_with_single_date_creates_expected_files(tmp_path):
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     actual_files = {file.name for file in output_files}
@@ -72,7 +72,7 @@ def test_split_by_day_with_empty_file_creates_no_files(tmp_path):
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     assert file_count == 0
@@ -100,7 +100,7 @@ def test_split_by_day_with_unnamed_leading_column_drops_leading_column(tmp_path)
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    split_by_day(str(input_file), str(output_dir))
+    split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     assert len(output_files) == 3
@@ -127,7 +127,7 @@ def test_split_by_day_with_null_dates_drops_invalid_entries(tmp_path):
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     assert file_count == 1
@@ -153,7 +153,7 @@ def test_split_by_day_with_malformed_dates_drops_invalid_entries(tmp_path):
     output_dir = tmp_path / "processed"
     output_dir.mkdir()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     assert file_count == 1
@@ -176,7 +176,7 @@ def test_split_by_day_with_non_existing_input_path_throws_file_not_found_error(t
     output_dir.mkdir()
 
     with pytest.raises(FileNotFoundError):
-        split_by_day(str(invalid_input), str(output_dir))
+        split_by_day(str(invalid_input), str(output_dir), "trans_date_trans_time")
 
     output_files = list(output_dir.iterdir())
     assert len(output_files) == 0
@@ -194,9 +194,39 @@ def test_split_by_day_with_output_dir_if_missing_creates_directory(tmp_path):
     output_dir = tmp_path / "new-output-dir"
     assert not output_dir.exists()
 
-    file_count = split_by_day(str(input_file), str(output_dir))
+    file_count = split_by_day(str(input_file), str(output_dir), "trans_date_trans_time")
 
     assert file_count == 1
     assert output_dir.exists()
     output_files = list(output_dir.iterdir())
     assert len(output_files) == 1
+
+
+def test_split_by_day_with_custom_date_field_creates_expected_files(tmp_path):
+    test_data = pd.DataFrame(
+        {
+            "custom_date": [
+                "2025-04-10 13:01:00",
+                "2025-04-10 14:02:00",
+                "2025-04-11 09:30:00",
+            ],
+            "cc_num": [1, 2, 3],
+            "merchant": ["A", "B", "C"],
+        }
+    )
+    expected_files = {"2025-04-10.csv", "2025-04-11.csv"}
+
+    input_file = tmp_path / "test.csv"
+    test_data.to_csv(input_file, index=False)
+
+    output_dir = tmp_path / "processed"
+    output_dir.mkdir()
+
+    file_count = split_by_day(str(input_file), str(output_dir), "custom_date")
+
+    output_files = list(output_dir.iterdir())
+    actual_files = {file.name for file in output_files}
+    assert file_count == 2
+    assert len(output_files) == 2
+    assert all(file.suffix == ".csv" for file in output_files)
+    assert actual_files == expected_files

@@ -7,7 +7,7 @@ import pandas as pd
 from splitter.logger import logger
 
 
-def split_by_day(input_path: str, output_dir: str) -> int:
+def split_by_day(input_path: str, output_dir: str, date_field: str) -> int:
     """
     Splits the data by day.
 
@@ -17,28 +17,32 @@ def split_by_day(input_path: str, output_dir: str) -> int:
     Args:
         input_path (str): Path to the raw CSV file.
         output_dir (str): Directory to save the split CSV files.
+        date_field (str): Name of the column that includes the dates to split the CSV by.
+    Returns:
+        int: Number of files created.
     """
-    df = read_raw_csv(path=input_path)
-    grouped_by_date = df.groupby(df["trans_date_trans_time"].dt.date)
+    df = read_raw_csv(path=input_path, date_field=date_field)
+    grouped_by_date = df.groupby(df[date_field].dt.date)
     save_grouped_data_to_csvs(grouped_by_date, output_dir)
     return len(grouped_by_date)
 
 
-def read_raw_csv(path: str) -> pd.DataFrame:
+def read_raw_csv(path: str, date_field: str) -> pd.DataFrame:
     """
     Reads a CSV file and returns a DataFrame.
 
     Args:
         path (str): Path to the CSV file.
+        date_field (str): Name of the column that includes the dates.
 
     Returns:
         pd.DataFrame: DataFrame containing the data from the CSV file.
     """
     df = pd.read_csv(path)
-    df["trans_date_trans_time"] = pd.to_datetime(df["trans_date_trans_time"], errors="coerce")
+    df[date_field] = pd.to_datetime(df[date_field], errors="coerce")
 
-    if df["trans_date_trans_time"].isnull().any():
-        bad_rows = df[df["trans_date_trans_time"].isnull()]
+    if df[date_field].isnull().any():
+        bad_rows = df[df[date_field].isnull()]
         logger.warning(f"⚠️ Warning: {len(bad_rows)} rows had invalid date format.")
 
     if "Unnamed: 0" in df.columns:

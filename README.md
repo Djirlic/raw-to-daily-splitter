@@ -46,7 +46,7 @@ You’ll also need to have Python **3.13+** installed.
 ## ⚙️ Usage
 
 ```bash
-poetry run python -m splitter.main --input ./data/raw/fraudTrain.csv --output ./data/processed/
+poetry run python -m splitter.main --input ./data/raw/fraudTrain.csv --output ./data/processed/ --date-field trans_date_trans_time
 ```
 
 Or simply:
@@ -55,10 +55,11 @@ Or simply:
 make run
 ```
 
-The `--input` and `--output` arguments are optional. Defaults are:
+The `--input`, `--output`, and `--date-field` arguments are optional. Defaults are (inspired by original dataset):
 
 - `./data/raw/fraudTrain.csv`
 - `./data/processed/`
+- `trans_date_trans_time`
 
 ---
 
@@ -118,7 +119,6 @@ raw-to-daily-splitter/
 
 ## 💡 Future Ideas
 
-- Make the date column configurable to support different kinds of datasets
 - Add parallel processing to improve performance for large CSV files
 
 ---
